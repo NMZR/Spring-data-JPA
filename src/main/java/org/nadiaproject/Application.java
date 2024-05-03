@@ -11,12 +11,12 @@ public class Application {
     @Bean
     CommandLineRunner commandLineRunner(StudentRepo studentRepo) {
         return args -> {
-            Faker samir = new Faker();
+            Faker dummystudent = new Faker();
             for (int i = 0; i < 20; i++) {
-                String firstname = samir.name().firstName();
-                String lastname = samir.name().lastName();
+                String firstname = dummystudent.name().firstName();
+                String lastname = dummystudent.name().lastName();
                 String email = String.format("%s.%s@gmail.nm", firstname, lastname);
-                student student = new student(firstname, lastname, email, samir.number().numberBetween(17, 55));
+                student student = new student(firstname, lastname, email, dummystudent.number().numberBetween(17, 55));
                 studentRepo.save(student);
             }
 //            student nadia = new student("nadia","malikzada","1234@gmail.com",22);

@@ -8,15 +8,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-public interface StudentRepo extends JpaRepository<student,Long> {
+public interface StudentRepo extends JpaRepository<Student,Long> {
     @Query("select s from Student s where s.email = ?1")// allow us to write custom JPAQL and SQL query
-    Optional<student> findStudentByEmail(String email);
+    Optional<Student> findStudentByEmail(String email);
     @Query ("select s from Student s where s.firstname = ?1 AND s.age>=?2")/// JPAQL query
-    List<student> findStudentsByFirstnameAndAgeGreaterThan(String firstname,
+    List<Student> findStudentsByFirstnameAndAgeGreaterThan(String firstname,
                                                            Integer age);
 
     @Query (value = "select * from student  where first_name = ?1 AND age >= ?2", nativeQuery = true) /// using the native Query
-    List<student> findStudentsByFirstnameAndAgeGreaterThanOrEqualNative(String firstname,
+    List<Student> findStudentsByFirstnameAndAgeGreaterThanOrEqualNative(String firstname,
                                                                         Integer age);
     /// instead of ussing ?1 or ?2 we can use :firstname or : age, but we have to specify the firstname and age inside the
     // method by using the @param annotation in the method

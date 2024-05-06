@@ -3,7 +3,7 @@ package org.nadiaproject;
 import jakarta.persistence.*;
 @Entity(name = "Student")
 @Table(name = "student", uniqueConstraints = {@UniqueConstraint(name = "student_email", columnNames = "Email")})
-public class student {
+public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "Id", updatable = false)
@@ -17,10 +17,10 @@ public class student {
     @Column(name = "Age", nullable = false)
     private Integer age;
 
-    public student() {
+    public Student() {
     }
 
-    public student( String firstname, String lastname, String email, Integer age) {
+    public Student(String firstname, String lastname, String email, Integer age) {
 
         this.firstname = firstname;
         this.lastname = lastname;

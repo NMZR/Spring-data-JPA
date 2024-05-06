@@ -5,20 +5,34 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
 @SpringBootApplication
 public class Application {
-    public static void main(String[] args){ SpringApplication.run(Application.class, args);}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
     @Bean
-    CommandLineRunner commandLineRunner(StudentRepo studentRepo) {
+    CommandLineRunner commandLineRunner(StudentRepo studentRepo, studentIdCardRepo studentIdCardRepo) {
         return args -> {
             Faker dummystudent = new Faker();
             for (int i = 0; i < 20; i++) {
                 String firstname = dummystudent.name().firstName();
                 String lastname = dummystudent.name().lastName();
                 String email = String.format("%s.%s@gmail.nm", firstname, lastname);
-                student student = new student(firstname, lastname, email, dummystudent.number().numberBetween(17, 55));
+                Student student = new Student(firstname, lastname, email, dummystudent.number().numberBetween(17, 55));
                 studentRepo.save(student);
-            }
+
+                new StudentIdCard("234444", student);
+//            generateRandomStudent(studentRepo);
+//            PageRequest pageRequest = PageRequest.of(0,10,
+//                    Sort.by("firstname"));/// we do paging and sorting all together
+//            Page<student> studentpage = studentRepo.findAll(pageRequest);
+//            System.out.println(studentpage);
+//            //Sorting(studentRepo);
+                ;
+                //JPA repository extends paging and sorting repository
+                // and paging and sorting repository extends crud repository
 //            student nadia = new student("nadia","malikzada","1234@gmail.com",22);
 //            student hm = new student("hm2","malikzada","hm@gmail.com",32);
 //            student timur = new student("timur","malikzada","timur@gmail.com",12);
@@ -44,6 +58,24 @@ public class Application {
 //            System.out.println("deleting hm2");
 //            System.out.println(studentRepo.deletStudentById(2L));
 //
+            }
+            ;
         };
     }
+
+//    private static void Sorting(StudentRepo studentRepo) {
+//        Sort sort = Sort.by("firstname").ascending().and(Sort.by("age").descending());
+//        studentRepo.findAll(sort).forEach(student -> System.out.println(student.getFirstname()+ " " + student.getAge()));
+//    }
+
+//    private static void generateRandomStudent(StudentRepo studentRepo) {
+//        Faker dummystudent = new Faker();
+//        for (int i = 0; i < 20; i++) {
+//            String firstname = dummystudent.name().firstName();
+//            String lastname = dummystudent.name().lastName();
+//            String email = String.format("%s.%s@gmail.nm", firstname, lastname);
+//            student student = new student(firstname, lastname, email, dummystudent.number().numberBetween(17, 55));
+//            studentRepo.save(student);
+//        }
 }
+//}

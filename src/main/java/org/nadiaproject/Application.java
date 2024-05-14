@@ -6,24 +6,40 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
-
     @Bean
     CommandLineRunner commandLineRunner(StudentRepo studentRepo, studentIdCardRepo studentIdCardRepo) {
         return args -> {
-            Faker dummystudent = new Faker();
-            for (int i = 0; i < 20; i++) {
-                String firstname = dummystudent.name().firstName();
-                String lastname = dummystudent.name().lastName();
-                String email = String.format("%s.%s@gmail.nm", firstname, lastname);
-                Student student = new Student(firstname, lastname, email, dummystudent.number().numberBetween(17, 55));
-                studentRepo.save(student);
+            Faker dummystudentcard = new Faker();
 
-                new StudentIdCard("234444", student);
+                String firstname = dummystudentcard.name().firstName();
+                String lastname = dummystudentcard.name().lastName();
+                String email = String.format("%s.%s@gmail.nm", firstname, lastname);
+                Student student = new Student(firstname, lastname, email, dummystudentcard.number().numberBetween(17, 55));
+                student.addBook( new Books(
+                        "harry potter", LocalDateTime.now().minusDays(4)
+                ));
+            student.addBook( new Books(
+                    "samir potter", LocalDateTime.now()
+            ));
+            student.addBook( new Books(
+                    "nadia potter", LocalDateTime.now().minusYears(1)
+            ));
+
+            StudentIdCard studentIdCard = new StudentIdCard(
+                       "455557899",student
+               );
+               studentIdCardRepo.save(studentIdCard);
+               studentIdCardRepo.findById(2l).ifPresent(System.out::println);
+               studentIdCardRepo.findById(1l).ifPresent(System.out::println);
+//               studentRepo.deleteById(1l);
 //            generateRandomStudent(studentRepo);
 //            PageRequest pageRequest = PageRequest.of(0,10,
 //                    Sort.by("firstname"));/// we do paging and sorting all together
@@ -44,7 +60,15 @@ public class Application {
 ////            studentRepo.findById(2L).ifPresentOrElse(System.out::println, ()-> System.out.println("student Id not found"));
 ////            studentRepo.saveAll(List.of(nadia,hm));
 ////            System.out.println(studentRepo.count());
-////            studentRepo.findById(3L).ifPresentOrElse(System.out::println, ()-> System.out.println("student Id not found"));
+            studentRepo.findById(1L).ifPresent(s -> {
+                        System.out.println("Fetch books lazy");
+                        List<Books> books = student.getBooks();
+                        books.forEach(b ->
+                        {
+                            System.out.println(
+                                    s.getFirstname() + " " + "borrowed " + b.getBook_name());
+                        });
+                    });
 ////            System.out.println("select students by id");
 ////            List<student> students = studentRepo.findAll();
 ////            students.forEach(System.out::println);
@@ -77,5 +101,5 @@ public class Application {
 //            student student = new student(firstname, lastname, email, dummystudent.number().numberBetween(17, 55));
 //            studentRepo.save(student);
 //        }
-}
+
 //}

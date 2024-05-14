@@ -1,6 +1,11 @@
 package org.nadiaproject;
 
 import jakarta.persistence.*;
+import org.apache.tomcat.util.digester.ArrayStack;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name = "Student")
 @Table(name = "student", uniqueConstraints = {@UniqueConstraint(name = "student_email", columnNames = "Email")})
 public class Student {
@@ -16,6 +21,16 @@ public class Student {
     private String email;
     @Column(name = "Age", nullable = false)
     private Integer age;
+    @OneToOne(mappedBy = "student", orphanRemoval = true) // mapedby forms a bidirectional relationship if you load student it will also load the student card
+    private StudentIdCard studentIdCard; /// studentidcard is the owning entity.
+    // orphan removal = When you have two entities with a parent-child relationship,
+    // orphan removal ensures that when a child entity is no longer referenced by its parent
+    @OneToMany(mappedBy = "student", orphanRemoval = true,
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY) /// when we delete student we delete its children
+    // Always start with lazy, if the application need more data use eager or make query to get more data
+    private List<Books>  books = new ArrayList<>();
+
+
 
     public Student() {
     }
@@ -26,6 +41,26 @@ public class Student {
         this.lastname = lastname;
         this.email = email;
         this.age = age;
+    }
+    public void addBook(Books book){
+        if (!this.books.contains(book)){
+            this.books.add(book);
+            book.setStudent(this); // load the book load the students
+        }
+    }
+    public void removeBook(Books books){
+        if (this.books.contains(books)){
+            this.books.remove(books);
+            books.setStudent(null);
+        }
+    }
+
+    public List<Books> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Books> books) {
+        this.books = books;
     }
 
     public Long getId() {

@@ -3,11 +3,13 @@ package org.nadiaproject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
+@Repository
+@Transactional(readOnly = true) /// we can only read the data
 public interface StudentRepo extends JpaRepository<Student,Long> {
     @Query("select s from Student s where s.email = ?1")// allow us to write custom JPAQL and SQL query
     Optional<Student> findStudentByEmail(String email);
@@ -34,7 +36,8 @@ public interface StudentRepo extends JpaRepository<Student,Long> {
     // tells the spring data that the query does not need to map anything in the database, it will modify data our table.
     @Query("delete from Student x where x.id = ?1")
     int deletStudentById(Long id);
-    ///
+    /// by default all the query methods are transactional when working with spring data JPA
+
 
 }
 

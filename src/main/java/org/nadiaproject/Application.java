@@ -36,7 +36,13 @@ public class Application {
             StudentIdCard studentIdCard = new StudentIdCard(
                        "455557899",student
                );
-               studentIdCardRepo.save(studentIdCard);
+               student.setStudentIdCard(studentIdCard);
+
+               student.addEnrolment(new Enrolment(new EnrolmentId(1L,1L),student, new Course("cse","IT"),LocalDateTime.now(),"rehan"));
+            student.addEnrolment(new Enrolment(new EnrolmentId(1L,1L),student, new Course("cse","IT"),LocalDateTime.now().minusDays(18),"samir"));
+            student.addEnrolment(new Enrolment(new EnrolmentId(1L,1L),student, new Course("cse","IT"),LocalDateTime.now().minusDays(18),"asma"));
+               studentRepo.save(student);
+//               studentIdCardRepo.save(studentIdCard);
                studentIdCardRepo.findById(2l).ifPresent(System.out::println);
                studentIdCardRepo.findById(1l).ifPresent(System.out::println);
 //               studentRepo.deleteById(1l);

@@ -21,7 +21,7 @@ public class Student {
     private String email;
     @Column(name = "Age", nullable = false)
     private Integer age;
-    @OneToOne(mappedBy = "student", orphanRemoval = true) // mapedby forms a bidirectional relationship if you load student it will also load the student card
+    @OneToOne(mappedBy = "student", orphanRemoval = true,cascade = {CascadeType.PERSIST, CascadeType.REMOVE}) // mapedby forms a bidirectional relationship if you load student it will also load the student card
     private StudentIdCard studentIdCard; /// studentidcard is the owning entity.
     // orphan removal = When you have two entities with a parent-child relationship,
     // orphan removal ensures that when a child entity is no longer referenced by its parent
@@ -29,6 +29,17 @@ public class Student {
             cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY) /// when we delete student we delete its children
     // Always start with lazy, if the application need more data use eager or make query to get more data
     private List<Books>  books = new ArrayList<>();
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "student")/// this name comes from enrolment class
+//    @JoinTable(// it will create a joinned table, which in here is enrollment.
+//            name = "Enrolment",
+//    joinColumns = @JoinColumn(name = "student_id",
+//            foreignKey = @ForeignKey(name = "enrolment_st_fk")
+//    ), inverseJoinColumns = @JoinColumn(name = "course_id",
+//            foreignKey = @ForeignKey(name = "enrolment_course_fk")
+//    ))
+
+    private List<Enrolment> enrolments = new ArrayList<>();
+
 
 
 
@@ -95,6 +106,14 @@ public class Student {
         this.email = email;
     }
 
+    public StudentIdCard getStudentIdCard() {
+        return studentIdCard;
+    }
+
+    public void setStudentIdCard(StudentIdCard studentIdCard) {
+        this.studentIdCard = studentIdCard;
+    }
+
     public Integer getAge() {
         return age;
     }
@@ -102,6 +121,39 @@ public class Student {
     public void setAge(Integer age) {
         this.age = age;
     }
+
+    public List<Enrolment> getEnrolments() {
+        return enrolments;
+    }
+
+    public void setEnrolments(List<Enrolment> enrolments) {
+        this.enrolments = enrolments;
+    }
+    public void addEnrolment(Enrolment enrolment){
+        if (!enrolments.contains((enrolment))) {
+            enrolments.add(enrolment);
+
+        }
+    }
+    public void removerenrolment(Enrolment enrolment){
+            enrolments.remove(enrolment);
+    }
+    //    public List<Course> getCourses() {
+//        return enrolments;
+//    }
+//
+//    public void setCourses(List<Course> courses) {
+//        this.enrolments = courses;
+//    }
+//    public void enrolCourse(Course course){
+//        enrolments.add(course);
+//        course.getStudents().add(this);
+//    }
+//    public void unEnrollCourse(Course course){
+//        enrolments.remove(course);
+//        course.getStudents().remove(this);
+//    }
+
 
     @Override
     public String toString() {
